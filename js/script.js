@@ -7,11 +7,12 @@ window.onload = function() {
 	opt_template.removeAttribute("id");
 	opt_template.removeAttribute("style");
 */
-	document.getElementById("next").addEventListener("click", getQuestions);
+	document.getElementById("skip").addEventListener("click", getQuestions);
 
 	if (!localStorage.token) getToken();
 	getCategories();
 	getQuestions();
+	updateScore();
 }
 
 const RESPONSES = [
@@ -21,6 +22,9 @@ const RESPONSES = [
 	"Token Not Found", 
 	"Token Empty"
 ];
+
+const correctSound = new Audio("sound/correct.wav");
+const errorSound = new Audio("sound/error.wav");
 
 
 function checkOption(element_id) {
@@ -32,15 +36,24 @@ function checkAnswer(answer) {
 	if (sessionStorage.currentCorrectAnswer == answer) {
 		sessionStorage.score++;
 		return true;
+	} else {
+		sessionStorage.score--;
+		return false;
 	}
-	return false;
 }
 
 function processAnswer(element) {
-	if (checkAnswer(element.textContent)) {
-		element.style;
+	disableRadios("opt");
+
+	if (checkAnswer(element.value)) {
+		element.parentNode.classList.add("alert");
+		correctSound.play();
+	} else {
+		element.parentNode.style.backgroundColor = "red";
+		errorSound.play();
 	}
 	updateScore();
+	getQuestions();
 }
 
 function clearOptions() {
@@ -52,6 +65,7 @@ function updateScore() {
 	let score = document.getElementById("score");
 	score.textContent = sessionStorage.score;
 }
+
 
 function getQuestions() {
 	let category = checkOption("categories");
@@ -85,7 +99,7 @@ function parseQuestions(xhttp) {
 		for (let answer of answers) {
 			let opt_template = `
 			<div class="form-check">
-				<input type="radio" name="opt" id="opt${i}" class="form-check-input" onchange="checkAnswer(this)">
+				<input type="radio" value="${answer}" name="opt" id="opt${i}" class="form-check-input" onchange="processAnswer(this)">
 				<label for="opt${i}" class="form-check-label">${answer}</label>
 			</div>`
 			answer_list.insertAdjacentHTML("beforeend", opt_template);
@@ -93,6 +107,7 @@ function parseQuestions(xhttp) {
 		}
 	}
 }
+
 
 function getCategories() {
 	httpGet(`https://opentdb.com/api_category.php`, parseCategories);
@@ -110,6 +125,7 @@ function parseCategories(xhttp) {
 	}
 }
 
+
 function getToken() {
 	httpGet(
 		`https://opentdb.com/api_token.php?command=request`, 
@@ -120,6 +136,12 @@ function getToken() {
 function parseToken(xhttp) {
 	const response = JSON.parse(xhttp.responseText);
 	if (!localStorage.token) localStorage.token = response.token;
+}
+
+
+function disableRadios(name) {
+	let radios = document.getElementsByName(name);
+	for (let i = 0; i < radios.length; i++) radios[i].disabled = true;
 }
 
 function httpGet(url, callback) {
