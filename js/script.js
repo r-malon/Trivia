@@ -1,7 +1,7 @@
 "use strict";
 
 window.onload = function() {
-	var SCORE = 0;
+	sessionStorage.score = 0;
 /*
 	var opt_template = document.getElementById("opt_template").cloneNode(true);
 	opt_template.removeAttribute("id");
@@ -14,6 +14,14 @@ window.onload = function() {
 	getQuestions();
 }
 
+const RESPONSES = [
+	"Success", 
+	"No Results", 
+	"Invalid Parameter", 
+	"Token Not Found", 
+	"Token Empty"
+];
+
 
 function checkOption(element_id) {
 	let element = document.getElementById(element_id);
@@ -21,12 +29,28 @@ function checkOption(element_id) {
 }
 
 function checkAnswer(answer) {
-	// body...
+	if (sessionStorage.currentCorrectAnswer == answer) {
+		sessionStorage.score++;
+		return true;
+	}
+	return false;
+}
+
+function processAnswer(element) {
+	if (checkAnswer(element.textContent)) {
+		element.style;
+	}
+	updateScore();
 }
 
 function clearOptions() {
 	let answer_list = document.getElementById("answer_list");
 	answer_list.replaceChildren();
+}
+
+function updateScore() {
+	let score = document.getElementById("score");
+	score.textContent = sessionStorage.score;
 }
 
 function getQuestions() {
@@ -43,19 +67,25 @@ function getQuestions() {
 function parseQuestions(xhttp) {
 	const response = JSON.parse(xhttp.responseText);
 	let statement = document.getElementById("statement");
+	if (response.response_code != 0) {
+		statement.textContent = `ERROR: ${RESPONSES[response.response_code]}`;
+		return;
+	}
+
 	let answer_list = document.getElementById("answer_list");
 	let i = 0;
 	clearOptions();
 
 	for (let result of response.results) {
-		let answers = shuffle([result.correct_answer, ...result.incorrect_answers]);
-		console.log(answers);
+		sessionStorage.currentCorrectAnswer = result.correct_answer;
+		let answers = [result.correct_answer, ...result.incorrect_answers];
+		answers = shuffle(answers);
 		statement.innerHTML = result.question;	// use insert?
 
 		for (let answer of answers) {
 			let opt_template = `
 			<div class="form-check">
-				<input type="radio" name="opt" id="opt${i}" class="form-check-input" onchange="">
+				<input type="radio" name="opt" id="opt${i}" class="form-check-input" onchange="checkAnswer(this)">
 				<label for="opt${i}" class="form-check-label">${answer}</label>
 			</div>`
 			answer_list.insertAdjacentHTML("beforeend", opt_template);
