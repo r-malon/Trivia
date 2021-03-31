@@ -13,16 +13,24 @@
 	<div class="jumbotron bg-dark">
 		<div class="container py-2 text-center text-white rounded">
 			<h2>Let's play some Trivia!</h2>
-			<p class="lead">Trivia is a type of game in which players (who can play individually or in a team) are asked questions about different topics and they have to get as many correct answers as possible.</p>
-			<div class="container accordion">
-				<div class="accordion-item">RULES</div>
+			<div id="accordion" class="accordion accordion-flush">
+				<div class="accordion-item w-50 bg-secondary" style="margin: auto;">
+					<h2 id="heading" class="accordion-header">
+						<button class="accordion-button collapsed bg-secondary text-white" data-bs-toggle="collapse" data-bs-target="#collapse">RULES</button>
+					</h2>
+					<div id="collapse" class="accordion-collapse collapse" aria-labelledby="heading" data-bs-parent="#accordion">
+						<div class="accordion-body">
+							Trivia is a type of game in which players (who can play individually or in a team) are asked questions about different topics and they have to get as many correct answers as possible. Each correct answer will award you 1 point, each wrong answer will take 1 point away. If you don't want to answer a question, skip it.
+						</div>
+					</div>
+				</div>
 			</div>
-			<p>CURRENT SCORE: <span id="score"></span></p>
+			<p class="fw-bold mt-3">CURRENT SCORE: <span id="score"></span></p>
 		</div>
 	</div>
 
 
-	<fieldset class="container row border g-3 my-3" style="margin: auto;">
+	<fieldset class="container row shadow-sm border rounded g-3 my-3" style="margin: auto;">
 		<div class="col-sm">
 			<label for="categories">Select category: </label>
 			<select id="categories" name="categories" class="form-select">
@@ -53,17 +61,26 @@
 	</fieldset>
 
 
-	<fieldset class="container border py-3">
-		<div id="statement" class="container font-monospace" style="text-align: justify;">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+	<fieldset class="container shadow-sm border rounded py-3 mb-3">
+		<div id="statement" class="container font-monospace" style="text-align: justify;">
+			<span class="fs-4">LOADING QUESTION...</span>
+			<div class="spinner-border spinner-border-sm text-warning align-text-top" role="status"></div>
+		</div>
 
 		<hr>
 
 		<div id="answer_list" class="col-sm"></div>
 	</fieldset>
+<!--
+	<div class="container toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="d-flex">
+			<div id="toast" class="toast-body">
+			Hello, world! This is a toast message.
+			</div>
+			<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+	</div>
+-->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </body>
 </html>

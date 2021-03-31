@@ -46,10 +46,10 @@ function processAnswer(element) {
 	disableRadios("opt");
 
 	if (checkAnswer(element.value)) {
-		element.parentNode.classList.add("alert");
+		element.parentNode.classList.add("text-success");
 		correctSound.play();
 	} else {
-		element.parentNode.style.backgroundColor = "red";
+		element.parentNode.classList.add("text-danger");
 		errorSound.play();
 	}
 	updateScore();
@@ -78,13 +78,15 @@ function getQuestions() {
 	);
 }
 
-function parseQuestions(xhttp) {
-	const response = JSON.parse(xhttp.responseText);
+function parseQuestions(xhr) {
+	const response = JSON.parse(xhr.responseText);
 	let statement = document.getElementById("statement");
 	if (response.response_code != 0) {
 		statement.textContent = `ERROR: ${RESPONSES[response.response_code]}`;
 		return;
 	}
+
+// split func here?
 
 	let answer_list = document.getElementById("answer_list");
 	let i = 0;
@@ -113,8 +115,8 @@ function getCategories() {
 	httpGet(`https://opentdb.com/api_category.php`, parseCategories);
 }
 
-function parseCategories(xhttp) {
-	const response = JSON.parse(xhttp.responseText);
+function parseCategories(xhr) {
+	const response = JSON.parse(xhr.responseText);
 	let categories = document.getElementById("categories");
 
 	for (let category of response.trivia_categories) {
@@ -133,8 +135,8 @@ function getToken() {
 	);
 }
 
-function parseToken(xhttp) {
-	const response = JSON.parse(xhttp.responseText);
+function parseToken(xhr) {
+	const response = JSON.parse(xhr.responseText);
 	if (!localStorage.token) localStorage.token = response.token;
 }
 
@@ -145,14 +147,12 @@ function disableRadios(name) {
 }
 
 function httpGet(url, callback) {
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			callback(this);
-		}
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) callback(this);
 	};
-	xhttp.open("GET", url, true);
-	xhttp.send();
+	xhr.open("GET", url, true);
+	xhr.send();
 }
 
 function shuffle(a) {
