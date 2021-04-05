@@ -23,6 +23,7 @@ const RESPONSES = [
 	"Token Empty"
 ];
 
+const SRC = "https://opentdb.com";
 const correctSound = new Audio("sound/correct.wav");
 const errorSound = new Audio("sound/error.wav");
 
@@ -73,7 +74,7 @@ function getQuestions() {
 	let type = checkOption("types");
 
 	httpGet(
-		`https://opentdb.com/api.php?amount=${1}&category=${category}&difficulty=${difficulty}&type=${type}&token=${localStorage.token}`, 
+		`${SRC}/api.php?amount=${1}&category=${category}&difficulty=${difficulty}&type=${type}&token=${localStorage.token}`, 
 		parseQuestions
 	);
 }
@@ -112,7 +113,7 @@ function parseQuestions(xhr) {
 
 
 function getCategories() {
-	httpGet(`https://opentdb.com/api_category.php`, parseCategories);
+	httpGet(`${SRC}/api_category.php`, parseCategories);
 }
 
 function parseCategories(xhr) {
@@ -130,7 +131,7 @@ function parseCategories(xhr) {
 
 function getToken() {
 	httpGet(
-		`https://opentdb.com/api_token.php?command=request`, 
+		`${SRC}/api_token.php?command=request`, 
 		parseToken
 	);
 }
